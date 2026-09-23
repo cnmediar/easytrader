@@ -94,6 +94,23 @@ class Copy(BaseStrategy):
         except:
             Copy._need_captcha_reg = True
 
+    @staticmethod
+    def _clear_editor(editor):
+        """清空验证码输入框
+
+        验证码输错后弹窗不会关闭、输入框内容会保留, 重试时若不先清空, 新输入会追加在后面
+        (变成 8 位) 从而一直验证失败
+        """
+        try:
+            editor.set_edit_text("")
+        except Exception:  # pylint: disable=broad-except
+            pass
+        try:
+            # set_edit_text 对安全控件可能无效, 再用退格兜底清掉残留字符
+            editor.type_keys("{BACKSPACE 12}", pause=0.02)
+        except Exception:  # pylint: disable=broad-except
+            pass
+
     def _get_clipboard_data(self) -> str:
         if Copy._need_captcha_reg:
             if (
@@ -118,13 +135,26 @@ class Copy(BaseStrategy):
                         ) # 验证码输入框
                         editor.set_focus() # 焦点移到验证码输入框 (也可不聚焦防止键盘误触输入，不聚焦type_edit_control_keys也可正常输入)
                         self._trader.wait(0.1) # 输入前短暂等待
-                        self._trader.type_edit_control_keys(
-                            editor,
-                            captcha_num
-                        )  # 模拟输入验证码
+                        # 重试时上一次输入的内容还留在框里, 必须先清空, 否则会变成 8 位导致持续失败
+                        self._clear_editor(editor)
+                        try:
+                            # 部分客户端(如同花顺)的输入框是安全控件, set_edit_text /
+                            # type_edit_control_keys 写不进去, 必须用真实键盘输入
+                            editor.type_keys(captcha_num, pause=0.05)
+                        except Exception:  # pylint: disable=broad-except
+                            self._trader.type_edit_control_keys(
+                                editor,
+                                captcha_num
+                            )  # 模拟输入验证码
 
-                        self._trader.wait(0.1) # 输完后短暂等待
-                        self._trader.app.top_window().type_keys("{ENTER}", pause=0.1)  # 模拟发送enter，点击确定
+                        self._trader.wait(0.2) # 输完后短暂等待
+                        try:
+                            # 优先点击确定按钮, 某些客户端不响应回车提交
+                            self._trader.app.top_window().child_window(
+                                control_id=1, class_name="Button"
+                            ).click()
+                        except Exception:  # pylint: disable=broad-except
+                            self._trader.app.top_window().type_keys("{ENTER}", pause=0.1)  # 模拟发送enter，点击确定
                         if not editor.exists(timeout=1):  # 窗体消失
                             logger.info("验证码验证成功-->" + captcha_num)
                             found = True
