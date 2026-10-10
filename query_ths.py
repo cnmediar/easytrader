@@ -20,7 +20,16 @@
   写入是否成功需截图确认)
 - connect 前会等待并还原主窗口: xiadan.exe 处于登录框阶段/最小化到托盘/主窗口未就绪时,
   pywinauto 的 connect(path=) 会报 "No windows for that process could be found"
+
+表格读取策略(--strategy, 默认 wmcopy):
+- wmcopy: 走剪贴板(WM_COMMAND 0xE122 复制)。本客户端有"拷贝保护", 每次读表格都会弹
+  「检测到您正在拷贝数据」验证码弹窗, 由 easytrader 的 OCR 自动填写并重试
+- xls: 走 Ctrl+S 另存为文件, 不碰剪贴板。但本客户端"保存"同样受保护——Ctrl+S 弹出的也是
+  「检测到您正在保存数据」验证码弹窗(控件与拷贝保护弹窗相同: 图片 0x965 / 输入框 0x964),
+  而不是文件另存为对话框, 所以这里并没有更快, 仅作备用/它用
+- auto: 先试 xls, 失败自动回退 wmcopy
 """
+import argparse
 import time
 
 import win32con
@@ -28,12 +37,23 @@ import win32gui
 from pywinauto import Desktop, findwindows
 
 import easytrader
-from easytrader.grid_strategies import WMCopy
+from easytrader.grid_strategies import WMCopy, Xls
 from easytrader.utils.captcha import find_tesseract_cmd
 
 ths_exe_path = r"D:\同花顺软件\同花顺\xiadan.exe"
 MAIN_WINDOW_TITLE = "网上股票交易系统5.0"
 CONNECT_TIMEOUT = 60
+
+# 表格读取策略: xls(另存为文件, 不走剪贴板) / wmcopy(走剪贴板, 会触发拷贝保护验证码) /
+# auto(先试 xls, 失败自动回退 wmcopy). 用 --strategy=xls 覆盖
+parser = argparse.ArgumentParser(description="同花顺信用账户查询")
+parser.add_argument(
+    "--strategy",
+    choices=["auto", "xls", "wmcopy"],
+    default="wmcopy",
+    help="表格读取策略(默认 wmcopy: 本客户端保存也弹验证码, xls 无速度优势)",
+)
+args = parser.parse_args()
 
 
 def wait_client_window(title=MAIN_WINDOW_TITLE, timeout=CONNECT_TIMEOUT):
@@ -68,7 +88,9 @@ print(f"已连接客户端 PID={pid}")
 # 该客户端同一时刻存在 5 个 control_id=1047 的 grid(每个页面各一个, 只有当前页面那个可见),
 # easytrader 默认取第一个(隐藏的小 grid) => 读出来是空表/报错 ElementAmbiguousError。
 # 这里改为"取可见且面积最大的那个"
-class VisibleGridWMCopy(WMCopy):
+class VisibleGridMixin:
+    """选可见且面积最大的 grid(覆盖默认"取第一个"的行为)"""
+
     def _get_grid(self, control_id: int):
         try:
             candidates = findwindows.find_elements(
@@ -91,7 +113,53 @@ class VisibleGridWMCopy(WMCopy):
         )
 
 
-user.grid_strategy = VisibleGridWMCopy()
+class VisibleGridWMCopy(VisibleGridMixin, WMCopy):
+    """走剪贴板: 会触发客户端"拷贝保护"验证码弹窗, 需要 OCR"""
+
+
+class VisibleGridXls(VisibleGridMixin, Xls):
+    """走另存为文件(Ctrl+S): 不碰剪贴板, 理论上不弹验证码"""
+
+
+class AutoGridStrategy:
+    """先试 Xls; 若该客户端不支持 Ctrl+S 导出则自动回退 WMCopy"""
+
+    def __init__(self):
+        self._trader = None
+        self._strategy = None
+
+    def set_trader(self, trader):
+        self._trader = trader
+
+    def get(self, control_id: int):
+        if self._strategy is None:
+            self._use(VisibleGridXls())
+        try:
+            return self._strategy.get(control_id)
+        except Exception as ex:  # noqa: BLE001
+            if isinstance(self._strategy, VisibleGridXls):
+                print(
+                    f"Xls 策略读取失败({type(ex).__name__}: {ex}), 自动回退剪贴板策略"
+                )
+                close_all_popups()
+                self._use(VisibleGridWMCopy())
+                return self._strategy.get(control_id)
+            raise
+
+    def _use(self, strategy):
+        self._strategy = strategy
+        self._strategy.set_trader(self._trader)
+
+
+def make_grid_strategy(name: str):
+    if name == "xls":
+        return VisibleGridXls()
+    if name == "wmcopy":
+        return VisibleGridWMCopy()
+    return AutoGridStrategy()
+
+
+user.grid_strategy = make_grid_strategy(args.strategy)
 # 如需下单(buy/sell), 先开启键盘输入模式:
 # user.enable_type_keys_for_editor()
 
@@ -119,6 +187,22 @@ def close_copy_captcha():
             user.wait(0.5)
 
 
+def close_all_popups():
+    """关掉残留的另存为/报错弹窗, 避免挡住后续操作(仅用于策略回退前的清理)"""
+    for win in user.app.windows(visible_only=True):
+        try:
+            title = win.window_text()
+            if win.element_info.class_name != "#32770" and "另存为" not in title:
+                continue
+        except Exception:  # noqa: BLE001
+            continue
+        try:
+            win.close()
+            user.wait(0.2)
+        except Exception:  # noqa: BLE001
+            pass
+
+
 def drop_empty_rows(rows):
     """客户端空表格会带若干空白行, 过滤掉"""
     if not isinstance(rows, list):
@@ -130,6 +214,28 @@ def drop_empty_rows(rows):
     ]
 
 
+def current_account():
+    """从客户端状态栏读当前登录的资金账号
+
+    easytrader 的 ths 没有 login/prepare, 挂到哪个窗口就是哪个账号, 所以切换后用它确认。
+    客户端是自绘界面(GetMenu 返回 0, 无标准菜单), 只能按文本特征从 Static 里筛:
+    账号形如 mncg116(纯 ASCII 字母数字, 长度 5~16, 不是纯数字)
+    """
+    for c in user.main.descendants(class_name="Static"):
+        try:
+            text = (c.window_text() or "").strip()
+        except Exception:  # noqa: BLE001
+            continue
+        if (
+            5 <= len(text) <= 16
+            and text.isascii()
+            and text.isalnum()
+            and not text.isdigit()
+        ):
+            return text
+    return None
+
+
 def safe(getter):
     """单步失败不影响后续查询"""
     try:
@@ -139,7 +245,8 @@ def safe(getter):
 
 
 if __name__ == "__main__":
-    print("连接成功！")
+    print(f"连接成功！表格读取策略: {args.strategy}")
+    print("当前登录账号:", current_account())
     close_copy_captcha()
     print("资金信息:", safe(lambda: user.balance))
     print("持仓信息:", safe(lambda: user.position))

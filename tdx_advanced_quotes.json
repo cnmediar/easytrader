@@ -1,0 +1,437 @@
+{
+  "keyword": "高级行情产品",
+  "window_title": "通讯设置",
+  "rows": [],
+  "controls": [
+    {
+      "text": "通讯设置",
+      "control_type": "",
+      "class_name": "#32770"
+    },
+    {
+      "text": "确定",
+      "control_type": "",
+      "class_name": "Button"
+    },
+    {
+      "text": "自动连接资讯主站",
+      "control_type": "",
+      "class_name": "Button"
+    },
+    {
+      "text": "登录时查找最快主站",
+      "control_type": "",
+      "class_name": "Button"
+    },
+    {
+      "text": "SOCK4协议",
+      "control_type": "",
+      "class_name": "Button"
+    },
+    {
+      "text": "使用代理",
+      "control_type": "",
+      "class_name": "Button"
+    },
+    {
+      "text": "SOCK5协议",
+      "control_type": "",
+      "class_name": "Button"
+    },
+    {
+      "text": "HTTP代理",
+      "control_type": "",
+      "class_name": "Button"
+    },
+    {
+      "text": "80",
+      "control_type": "",
+      "class_name": "Edit"
+    },
+    {
+      "text": "取消",
+      "control_type": "",
+      "class_name": "Button"
+    },
+    {
+      "text": "主站设置",
+      "control_type": "",
+      "class_name": "Button"
+    },
+    {
+      "text": "网络设置",
+      "control_type": "",
+      "class_name": "Button"
+    },
+    {
+      "text": "：",
+      "control_type": "",
+      "class_name": "Static"
+    },
+    {
+      "text": "验证用户:",
+      "control_type": "",
+      "class_name": "Static"
+    },
+    {
+      "text": "密码:",
+      "control_type": "",
+      "class_name": "Static"
+    },
+    {
+      "text": "代理地址:",
+      "control_type": "",
+      "class_name": "Static"
+    },
+    {
+      "text": "启用绿色通道服务",
+      "control_type": "",
+      "class_name": "Button"
+    },
+    {
+      "text": "自动连接扩展市场行情主站",
+      "control_type": "",
+      "class_name": "Button"
+    },
+    {
+      "text": "测试代理",
+      "control_type": "",
+      "class_name": "Button"
+    },
+    {
+      "text": "选择绿色通道",
+      "control_type": "",
+      "class_name": "Button"
+    },
+    {
+      "text": "通达信深圳双线主站1",
+      "control_type": "",
+      "class_name": "ComboBox"
+    },
+    {
+      "text": "添加主站",
+      "control_type": "",
+      "class_name": "Button"
+    },
+    {
+      "text": "修改主站",
+      "control_type": "",
+      "class_name": "Button"
+    },
+    {
+      "text": "删除主站",
+      "control_type": "",
+      "class_name": "Button"
+    },
+    {
+      "text": "广州双线资讯主站1",
+      "control_type": "",
+      "class_name": "ComboBox"
+    },
+    {
+      "text": "添加主站",
+      "control_type": "",
+      "class_name": "Button"
+    },
+    {
+      "text": "修改主站",
+      "control_type": "",
+      "class_name": "Button"
+    },
+    {
+      "text": "删除主站",
+      "control_type": "",
+      "class_name": "Button"
+    },
+    {
+      "text": "扩展市场广州双线4",
+      "control_type": "",
+      "class_name": "ComboBox"
+    },
+    {
+      "text": "添加主站",
+      "control_type": "",
+      "class_name": "Button"
+    },
+    {
+      "text": "修改主站",
+      "control_type": "",
+      "class_name": "Button"
+    },
+    {
+      "text": "删除主站",
+      "control_type": "",
+      "class_name": "Button"
+    },
+    {
+      "text": "高级行情_深圳双线3",
+      "control_type": "",
+      "class_name": "ComboBox"
+    },
+    {
+      "text": "行情主站",
+      "control_type": "",
+      "class_name": "Static"
+    },
+    {
+      "text": "资讯主站",
+      "control_type": "",
+      "class_name": "Static"
+    },
+    {
+      "text": "证券交易中心",
+      "control_type": "",
+      "class_name": "Static"
+    },
+    {
+      "text": "扩展市场行情主站",
+      "control_type": "",
+      "class_name": "Static"
+    },
+    {
+      "text": "高级行情主站",
+      "control_type": "",
+      "class_name": "Static"
+    },
+    {
+      "text": "程序运行后自动登录",
+      "control_type": "",
+      "class_name": "Button"
+    },
+    {
+      "text": "信用交易中心",
+      "control_type": "",
+      "class_name": "Static"
+    },
+    {
+      "text": "证书管理中心",
+      "control_type": "",
+      "class_name": "Static"
+    },
+    {
+      "text": "自动连接TQ交流系统",
+      "control_type": "",
+      "class_name": "Button"
+    },
+    {
+      "text": "更改网络区域",
+      "control_type": "",
+      "class_name": "Button"
+    },
+    {
+      "text": "当前网络区域:",
+      "control_type": "",
+      "class_name": "Static"
+    },
+    {
+      "text": "未选择",
+      "control_type": "",
+      "class_name": "Static"
+    },
+    {
+      "text": "投顾登录中心",
+      "control_type": "",
+      "class_name": "Static"
+    },
+    {
+      "text": "启用特异网络模式(部分功能可能会失效,通常情况下请不要勾选)",
+      "control_type": "",
+      "class_name": "Button"
+    },
+    {
+      "text": "使用普通行情主站",
+      "control_type": "",
+      "class_name": "Button"
+    },
+    {
+      "text": "使用普通交易中心",
+      "control_type": "",
+      "class_name": "Button"
+    },
+    {
+      "text": "其它交易中心",
+      "control_type": "",
+      "class_name": "Static"
+    },
+    {
+      "text": "期权交易中心",
+      "control_type": "",
+      "class_name": "Static"
+    },
+    {
+      "text": "TP主站",
+      "control_type": "",
+      "class_name": "Static"
+    },
+    {
+      "text": "域:",
+      "control_type": "",
+      "class_name": "Static"
+    },
+    {
+      "text": "交易中心二",
+      "control_type": "",
+      "class_name": "Static"
+    },
+    {
+      "text": "不启用SDK版Level2行情",
+      "control_type": "",
+      "class_name": "Button"
+    },
+    {
+      "text": "缺省设置",
+      "control_type": "",
+      "class_name": "ComboBox"
+    },
+    {
+      "text": "目标网络",
+      "control_type": "",
+      "class_name": "Static"
+    },
+    {
+      "text": "其它设置",
+      "control_type": "",
+      "class_name": "Button"
+    },
+    {
+      "text": "TDXSSL(交易中心)",
+      "control_type": "",
+      "class_name": "ComboBox"
+    },
+    {
+      "text": "交易安全算法",
+      "control_type": "",
+      "class_name": "Static"
+    },
+    {
+      "text": "启用NewTC网上证券交易系统协同",
+      "control_type": "",
+      "class_name": "Button"
+    },
+    {
+      "text": "查找最快",
+      "control_type": "",
+      "class_name": "Button"
+    },
+    {
+      "text": "自动跳转到可用行情主站",
+      "control_type": "",
+      "class_name": "Button"
+    },
+    {
+      "text": "SDK代理模式(重启后生效)",
+      "control_type": "",
+      "class_name": "Button"
+    },
+    {
+      "text": "查找最快",
+      "control_type": "",
+      "class_name": "Button"
+    },
+    {
+      "text": "启用境外主站(包括行情、资讯、交易等，境内客户请不要勾选)",
+      "control_type": "",
+      "class_name": "Button"
+    },
+    {
+      "text": "添加主站",
+      "control_type": "",
+      "class_name": "Button"
+    },
+    {
+      "text": "修改主站",
+      "control_type": "",
+      "class_name": "Button"
+    },
+    {
+      "text": "删除主站",
+      "control_type": "",
+      "class_name": "Button"
+    },
+    {
+      "text": "交易节点组",
+      "control_type": "",
+      "class_name": "Static"
+    }
+  ],
+  "advanced_server": {
+    "server_name": "高级行情_深圳双线3",
+    "dialog_title": "通讯设置",
+    "values": [
+      "通讯设置",
+      "确定",
+      "自动连接资讯主站",
+      "登录时查找最快主站",
+      "SOCK4协议",
+      "使用代理",
+      "SOCK5协议",
+      "HTTP代理",
+      "80",
+      "取消",
+      "主站设置",
+      "网络设置",
+      "：",
+      "验证用户:",
+      "密码:",
+      "代理地址:",
+      "启用绿色通道服务",
+      "自动连接扩展市场行情主站",
+      "测试代理",
+      "选择绿色通道",
+      "通达信深圳双线主站1",
+      "添加主站",
+      "修改主站",
+      "删除主站",
+      "广州双线资讯主站1",
+      "添加主站",
+      "修改主站",
+      "删除主站",
+      "扩展市场广州双线4",
+      "添加主站",
+      "修改主站",
+      "删除主站",
+      "高级行情_深圳双线3",
+      "行情主站",
+      "资讯主站",
+      "证券交易中心",
+      "扩展市场行情主站",
+      "高级行情主站",
+      "程序运行后自动登录",
+      "信用交易中心",
+      "证书管理中心",
+      "自动连接TQ交流系统",
+      "更改网络区域",
+      "当前网络区域:",
+      "未选择",
+      "投顾登录中心",
+      "启用特异网络模式(部分功能可能会失效,通常情况下请不要勾选)",
+      "使用普通行情主站",
+      "使用普通交易中心",
+      "其它交易中心",
+      "期权交易中心",
+      "TP主站",
+      "域:",
+      "交易中心二",
+      "不启用SDK版Level2行情",
+      "缺省设置",
+      "目标网络",
+      "其它设置",
+      "TDXSSL(交易中心)",
+      "交易安全算法",
+      "启用NewTC网上证券交易系统协同",
+      "查找最快",
+      "自动跳转到可用行情主站",
+      "SDK代理模式(重启后生效)",
+      "查找最快",
+      "启用境外主站(包括行情、资讯、交易等，境内客户请不要勾选)",
+      "添加主站",
+      "修改主站",
+      "删除主站",
+      "交易节点组"
+    ],
+    "addresses": [
+      "139.9.2.221:7719",
+      "47.106.34.194:7615"
+    ]
+  }
+}
